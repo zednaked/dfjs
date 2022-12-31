@@ -69,6 +69,12 @@ class Cell {
     text(character, this.x, this.y, cellSize, cellSize);
     pop()
   }
+  mudaTipo (tiponovo)
+  {
+
+    this.type = tiponovo
+
+  }
 }
 // 1b. Crie a classe Dwarf
 
@@ -78,6 +84,7 @@ class Dwarf {
     this.y = y;
     this.color = [255,0,0];
     this.task = "Aguardando tarefa";
+    this.destination = null
   }
 
   
@@ -103,17 +110,42 @@ class Dwarf {
 
   move() {
     if (this.destination) {
-      let x = this.destination.x + cellSize / 2;
-      let y = this.destination.y + cellSize / 2;
+
+      let x
+      let y
+   
+
+      if (this.x  >= this.destination.x){
+         x = this.destination.x - (cellSize);
+        
+
+      }else if (this.x  <= this.destination.x){
+
+         x = this.destination.x + (cellSize);
+         
+      }
+      
+      if (this.y  >= this.destination.y){
+         y = this.destination.y - (cellSize);
+         
+
+      }else if (this.y <= this.destination.y){
+
+         y = this.destination.y + (cellSize);
+        
+      }
+     
       let distance = dist(this.x, this.y, x, y);
+    
   
       // Se o anão estiver próximo o suficiente da célula de destino
-      if (distance <= cellSize / 2) {
+      if (distance <= 65) {
         // Atualize a sua posição para o centro da célula de destino
-        this.x = x;
-        this.y = y;
+        this.x = this.destination.x;
+        this.y = this.destination.y-5;
         // Limpe a sua tarefa
         this.task = "Aguardando tarefa";
+        this.destination.mudaTipo ("Terra")
         this.destination = null;
       } else {
         // Caso contrário, mova o anão em direção à célula de destino
@@ -138,7 +170,7 @@ class Task {
 let pendingTasks = [];
 let canvasWidth = 800;
 let canvasHeight = 800;
-let cellSize = 20;
+let cellSize = 25;
 let gridWidth = canvasWidth / cellSize;
 let gridHeight = canvasHeight / cellSize;
 let map;
@@ -310,8 +342,10 @@ function drawMenu() {
 
 function handleInput() {
   if (mouseIsPressed) {
+    let my = mouseY + 20 
     let mouseMapX = floor(mouseX / cellSize);
-    let mouseMapY = floor(mouseY / cellSize);
+    let mouseMapY = floor(my / cellSize);
+   // console.log(mouseMapX)
     if (mouseMapX >= 0 && mouseMapX < gridWidth && mouseMapY >= 0 && mouseMapY < gridHeight) {
       let cell = map[mouseMapY][mouseMapX];
       let dwarf = dwarves[selectedDwarf];
